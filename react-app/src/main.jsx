@@ -1,12 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App.jsx";
-import "./index.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { BrowserRouter } from "react-router-dom";
+function AuditLogList() {
+  return <h1>Audit Page Works 🎉</h1>;
+}
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <React.StrictMode>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<h1>Home Page</h1>} />
+        <Route path="/audit-logs" element={<AuditLogList />} />
+      </Routes>
+    </BrowserRouter>
+  </React.StrictMode>
 );
