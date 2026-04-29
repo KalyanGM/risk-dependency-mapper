@@ -4,44 +4,114 @@ const cors = require("cors");
 const app = express();
 const PORT = 5000;
 
-// middleware
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-/* ================= ROOT API ================= */
+// In-memory data (acts like DB)
+let tasks = [
+  { id: 1, title: "Sample Task 1", status: "OPEN", date: "2026-04-28" },
+  { id: 2, title: "Sample Task 2", status: "CLOSED", date: "2026-04-27" }
+];
+
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+  res.send("API is running successfully 🚀");
 });
 
-/* ================= LOGIN API ================= */
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+// -----------------------------
+// GET all tasks
+// -----------------------------
+app.get("/tasks", (req, res) => {
+  res.status(200).json([
+    { id: 1, title: "Sample Task 1", status: "OPEN", date: "2026-04-28" },
+    { id: 2, title: "Sample Task 2", status: "CLOSED", date: "2026-04-27" }
+  ]);
+});
 
-  if (email === "test@gmail.com" && password === "1234") {
-    return res.json({ token: "abc123" });
+// -----------------------------
+// CREATE task
+// -----------------------------
+app.post("/tasks", (req, res) => {
+  const { title, status, date } = req.body;
+
+  if (!title || !status) {
+    return res.status(400).json({ message: "Title and status required" });
   }
 
-  res.status(401).json({ message: "Invalid credentials" });
+  const newTask = {
+    id: tasks.length + 1,
+    title,
+    status,
+    date
+  };
+
+  tasks.push(newTask);
+
+  res.status(201).json(newTask);
 });
 
-/* ================= GET ALL API ================= */
-app.get("/all", (req, res) => {
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 5;
+// -----------------------------
+// UPDATE task
+// -----------------------------
+app.put("/tasks/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const task = tasks.find(t => t.id === id);
 
-  const data = Array.from({ length: 50 }, (_, i) => ({
-    name: "Item " + (i + 1)
-  }));
+  if (!task) {
+    return res.status(404).json({ message: "Task not found" });
+  }
 
-  const start = (page - 1) * limit;
-  const end = start + limit;
+  Object.assign(task, req.body);
 
-  res.json({
-    data: data.slice(start, end)
+  res.status(200).json(task);
+});
+
+// -----------------------------
+// DELETE task
+// -----------------------------
+app.delete("/tasks/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const index = tasks.findIndex(t => t.id === id);
+
+  if (index === -1) {
+    return res.status(404).json({ message: "Task not found" });
+  }
+
+  tasks.splice(index, 1);
+
+  res.status(200).json({ message: "Task deleted successfully" });
+});
+
+// -----------------------------
+// STATS endpoint (for dashboard)
+// -----------------------------
+app.get("/stats", (req, res) => {
+  const open = tasks.filter(t => t.status === "OPEN").length;
+  const closed = tasks.filter(t => t.status === "CLOSED").length;
+
+  res.status(200).json({ open, closed });
+});
+
+// -----------------------------
+// AI endpoint
+// -----------------------------
+app.get("/ai", (req, res) => {
+  res.status(200).json({
+    message: "Focus on completing high priority OPEN tasks first."
   });
 });
 
-/* ================= START SERVER ================= */
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// -----------------------------
+// EXPORT for testing (IMPORTANT)
+// -----------------------------
+module.exports = app;
+
+// -----------------------------
+// START SERVER
+// -----------------------------
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log("Server running on port", PORT);
+  });
+}

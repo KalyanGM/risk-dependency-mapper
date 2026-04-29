@@ -1,62 +1,77 @@
 import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
-  const [form, setForm] = useState({
-    email: "test@gmail.com",
-    password: "1234"
-  });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-  const { login } = useAuth();
-
-  const handleSubmit = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
 
-    try {
-      const res = await axios.post("http://localhost:5000/login", form);
-
-      login(res.data.token || "loggedin");
-
-      alert("Login successful");
-
-      navigate("/list");
-    } catch (err) {
-      alert("Login failed");
-      console.error(err);
+    // Simple validation
+    if (!username || !password) {
+      alert("Please enter username and password");
+      return;
     }
+
+    // Dummy login (no backend needed)
+    localStorage.setItem("token", "dummy-token");
+
+    // Redirect to dashboard
+    window.location.href = "/dashboard";
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{ textAlign: "center", marginTop: "100px" }}
-    >
-      <h2>Login</h2>
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh"
+    }}>
+      <form
+        onSubmit={handleLogin}
+        style={{
+          border: "1px solid #ccc",
+          padding: "20px",
+          borderRadius: "10px",
+          width: "300px"
+        }}
+      >
+        <h2 style={{ textAlign: "center" }}>Login</h2>
 
-      <input
-        type="email"
-        value={form.email}
-        placeholder="Email"
-        onChange={(e) =>
-          setForm({ ...form, email: e.target.value })
-        }
-      />
-      <br /><br />
+        <div style={{ marginBottom: "10px" }}>
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={{ width: "100%", padding: "8px" }}
+          />
+        </div>
 
-      <input
-        type="password"
-        value={form.password}
-        placeholder="Password"
-        onChange={(e) =>
-          setForm({ ...form, password: e.target.value })
-        }
-      />
-      <br /><br />
+        <div style={{ marginBottom: "10px" }}>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ width: "100%", padding: "8px" }}
+          />
+        </div>
 
-      <button type="submit">Login</button>
-    </form>
+        <button
+          type="submit"
+          style={{
+            width: "100%",
+            padding: "10px",
+            backgroundColor: "black",
+            color: "white",
+            border: "none",
+            borderRadius: "5px"
+          }}
+        >
+          Login
+        </button>
+      </form>
+    </div>
   );
 }
