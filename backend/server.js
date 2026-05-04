@@ -1,5 +1,5 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 const app = express();
 const PORT = 5000;
@@ -14,6 +14,7 @@ let tasks = [
   { id: 2, title: "Sample Task 2", status: "CLOSED", date: "2026-04-27" }
 ];
 
+// Root API
 app.get("/", (req, res) => {
   res.send("API is running successfully 🚀");
 });
@@ -22,10 +23,7 @@ app.get("/", (req, res) => {
 // GET all tasks
 // -----------------------------
 app.get("/tasks", (req, res) => {
-  res.status(200).json([
-    { id: 1, title: "Sample Task 1", status: "OPEN", date: "2026-04-28" },
-    { id: 2, title: "Sample Task 2", status: "CLOSED", date: "2026-04-27" }
-  ]);
+  res.status(200).json(tasks);
 });
 
 // -----------------------------
@@ -84,7 +82,7 @@ app.delete("/tasks/:id", (req, res) => {
 });
 
 // -----------------------------
-// STATS endpoint (for dashboard)
+// STATS endpoint
 // -----------------------------
 app.get("/stats", (req, res) => {
   const open = tasks.filter(t => t.status === "OPEN").length;
@@ -103,15 +101,8 @@ app.get("/ai", (req, res) => {
 });
 
 // -----------------------------
-// EXPORT for testing (IMPORTANT)
-// -----------------------------
-module.exports = app;
-
-// -----------------------------
 // START SERVER
 // -----------------------------
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log("Server running on port", PORT);
-  });
-}
+app.listen(PORT, () => {
+  console.log("Server running on port", PORT);
+});
