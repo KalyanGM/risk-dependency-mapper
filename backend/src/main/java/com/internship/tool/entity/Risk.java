@@ -1,0 +1,38 @@
+package com.example.risk;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Risk {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+    private String description;
+    private String severity; // LOW, MEDIUM, HIGH
+    private String status;   // OPEN, CLOSED
+
+    private Long dependsOn;
+
+    public Risk() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getSeverity() { return severity; }
+    public void setSeverity(String severity) { this.severity = severity; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Long getDependsOn() { return dependsOn; }
+    public void setDependsOn(Long dependsOn) { this.dependsOn = dependsOn; }
+}

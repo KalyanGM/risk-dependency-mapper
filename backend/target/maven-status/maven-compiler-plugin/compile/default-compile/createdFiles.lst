@@ -1,0 +1,9 @@
+com\example\risk\CorsConfig.class
+com\example\risk\CorsConfig$1.class
+com\internship\tool\controller\LoginController.class
+com\example\risk\RiskApplication.class
+com\internship\tool\model\Project.class
+com\example\risk\Risk.class
+com\internship\tool\controller\ProjectController.class
+com\example\risk\RiskController.class
+com\internship\tool\repository\ProjectRepository.class
